@@ -1,0 +1,30 @@
+/*
+  Add PMPro billing fields to the edit user profile page.
+  You must Paid Memberships Pro and the Register Helper plugin installed:
+  http://wordpress.org/extend/plugins/paid-memberships-pro
+  https://github.com/strangerstudios/pmpro-register-helper
+*/
+function add_billing_fields_to_profile()
+{
+	global $pmpro_countries;
+	global $pmpro_state;
+	
+	//check for register helper
+	if(!function_exists("pmprorh_add_registration_field"))
+		return;
+	
+	//define the fields
+	$fields = array();
+	$fields[] = new PMProRH_Field("pmpro_baddress1", "text", array("label"=>"Address 1", "size"=>40, "profile"=>true, "required"=>false));
+	$fields[] = new PMProRH_Field("pmpro_baddress2", "text", array("label"=>"Address 2", "size"=>40, "profile"=>true, "required"=>false));
+	$fields[] = new PMProRH_Field("pmpro_bcity", "text", array("label"=>"City", "size"=>40, "profile"=>true, "required"=>false));
+	$fields[] = new PMProRH_Field("pmpro_bstate", "text", array("label"=>"State", "size"=>10, "profile"=>true, "required"=>false));
+	$fields[] = new PMProRH_Field("pmpro_bzipcode", "text", array("label"=>"Postal Code", "size"=>10, "profile"=>true, "required"=>false));
+	$fields[] = new PMProRH_Field("pmpro_bcountry", "select", array("label"=>"Country", "profile"=>true, "required"=>false, "options"=>array_merge(array(""=>"- choose one -"), $pmpro_countries)));
+	$fields[] = new PMProRH_Field("pmpro_bphone", "text", array("label"=>"Phone", "size"=>40, "profile"=>true, "required"=>false));	
+	
+	//add the fields into a new checkout_boxes are of the checkout page
+	foreach($fields as $field)
+		pmprorh_add_registration_field("profile", $field);
+}
+add_action("init", "add_billing_fields_to_profile");
